@@ -1,13 +1,13 @@
 # The Time Course of Neural Activity Predictive of Impending Movement
  This repository contains the code used in the study "The Time Course of Neural Activity Predictive of Impending Movement".
-## Overview
+## Overview & Inventory
  This repository contains the code necessary to generate the figures of the preprint https://doi.org/10.31219/osf.io/ghs95. Data for that goes along with this code is available at https://osf.io/wm95q/ (DOI 10.17605/OSF.IO/WM95Q).<br><br>
  
- For all components to run you should have MATLAB installed, Python 3 and the software singularity (version 3.4.1).<br>
+ For all components to run you should have MATLAB with fieldtrip installed, Python 3 and the software singularity (version 3.4.1).<br>
  For all components to run, first you need to download, unzip and merge into the repository and into their respective folders all the data from OSF (folders: data, data_ml, data_cubes and code_ml).<br>
  For all components to run, first you need to create the following folder: data_steps.<br><br>
  
- In the OSF repository you will find four folders:<br>
+ **In the OSF repository you will find four folders:** <br>
  * **data** This contains the raw data (.bdf) zipped (.zip) per session for all 17 participants (including 2 excluded from analysis)
  * **data_cubes** This contains the preprocessed data (.mat) from the 15 included participants, one file each.<br>
    Each data file contains two MATLAB variables:
@@ -27,9 +27,44 @@
      * _training_err_: The training error of the model as a function of number of rounds of boosting (plotted).
      * _validation_auc_: The validation AUC (in k-fold) of the model as a function of number of rounds of boosting (plotted).
      * _validation_err_: The validation error (in k-fold) of the model as a function of number of rounds of boosting (plotted).
-* **code_ml** This folder contains the container required to run pboost: ubuPy2_05_.img.<br><br>
-In the GitHub repository you will find three folders and four code files
+ * **code_ml** This folder contains the container required to run pboost: ubuPy2_05_.img.<br><br>
 
+**In the GitHub repository you will find three folders and four code files:** <br>
+* **code_ml** This folder contains two subfolders (DATA and EXPERIMENTS), two python scripts and one bash script.<br>
+  * To use this folder, put the container image (ubuPy2_05_.img) in the repository. Put the participants data_cubes (.mat) into their respective subject folders (DATA/SUBJXX/EEG/). Push the repository (code_ml) to your HPC cluster into a folder named 'pboost'. Run 'run_pboost.sh'.
+    * _run.py_: parallelizes adaboost and run adaboost with the selected base learners.
+    * _run_pboost.sh_: This will perform three main steps.
+      * first preprocess the data cubes for pboost (baseline, cumulative sum, random 10-fold split using utils.transform()).
+      * Then generate a config file for pboost using utils.cfg_generator().
+      * Then run pboost using run.py. Note: to process faster, send configs to different nodes in parallel if possible. 
+    * _utils.py_: contains 4 functions.
+      * _transform()_ takes data cubes and generates .dat files for both timebased and taskbased approach. Uses cumulative sum for faster Haar wavelet dot products during boosting. This function will also perform k-fold split, note that each run will obtain slightly different models based on the random k-fold split.
+      * _cfg_generator_taskbased()_: creates a config file indicate all parameters for AdaBoost for each sliding window for the taskbased approach.
+      * _cfg_generator_timebased()_: creates a config file indicate all parameters for AdaBoost for each sliding window for the timebased approach.
+      * _combine()_: This will create the result.csv file by extracting the mean AUC according to the .cfg file and the data in the /EXPERIMENTS/XXXXbased/eeg/out_XX folders.
+    * **EXPERIMENTS** contains the outputs of the model. Needs to be structured with a timebased and a taskbased subfolder each containing an eeg subfolder. Each eeg subfolders need to contain the _haar_wavelet_XXXXbased.py_ and _moving_average_XXXXbased.py_ files that define the base learners.
+    * **DATA** contains subfolders for each participants' data cube such that each participant's subfolder is named SUBXX where XX is the ID and each of these contains an EEG folder with the .mat data cube and a time.mat array with the time as 1D array for 2251 samples at 500 Hz.
+* **data_figure** This folder contains 6 .mat files, 2 .csv and 1 .xlsx. These are all the files sufficient to generate figures 2 & 3.
+  * _MRCP_onset.mat_: contains the 3 MRCP onset values.
+  * _RT.mat_: contains a structure with each participant's waiting times in the active trials.
+  * _erp_cube.mat_: contains a 4D array of condition-by-channel-by-time-by-participant EEG averages at each channels.
+  * _ga_power.mat_: contains a 3D array of frequency-by-time-by-participant average power at C3. frex and tftimes contains the frequency and time indexes values.
+  * _result_auc_meg.xlsx_: contains the AUC timecourses for each of the 3 PF MEG participants for the taskbased approach.
+  * _result_auc_taskbased.csv_: contains the AUC timecourses (and feature info) for each of the 15 OC EEG participants for the taskbased approach.
+  * _result_auc_timebased.csv_: contains the AUC timecourses (and feature info) for each of the 15 OC EEG participants for the timebased approach.
+  * _taskbased_edt_single.mat_: contains the earliest decodable time (using the single trial method) for each of the 15 participants for the taskbased approach.
+  * _timebased_edt_single.mat_: contains the earliest decodable time (using the single trial method) for each of the 15 participants for the timebased approach.
+* **src** This folder contains 1 .mat file and 4 .m functions used in the analysis.
+  * _BIOSEMI_labels.mat_: This file contains the correct channel labels in the order of A1-32 then B1-32 for the raw EEG data.
+  * _Get_ERD.m_: This file extracts power at C3 in the active condition using complex morlet wavelets. Generates _ga_power.mat_. Needs data_cube folder to be operational.
+  * _Get_ERP.m_: This file extracts average EEG activity for each participants. Generates _erp_cube.mat_. Needs data_cube folder to be operational.
+  * _Get_WT.m_: This file extracts the wait time in the active condition for each participant. Generates _RT.mat_. Needs data folder to be operational.
+  * _interpolate_fieldtrip.m_: For the channels missing, this function will interpolate them using the distance weighted average of the nearest 5 channels.
+* _Get_EDT_single.py_: This code extracts from taskbased and timebased folders the earliest decodable time from the out subfolders. This code generates _taskbased_edt_single.mat_ and _timebased_edt_single.mat_. This code needs data_ml to be operational and needs to be ran from data_ml.
+* _make_figure_2.m_: This code will generate figure 2. It will run without any processing needed. This code needs data_figure and src to be operational.
+* _make_figure_3.m_: This code will generate figure 3. It will run without any processing needed. This code needs data_figure and src to be operational.
+* _preprocess.m_: This code will turn raw .bdf files from **data** into data cubes in **data_cubes**. This code will prompt the user for identifying noisy channels, ICA components and noisy trials. For a description of the steps see the preprint and the in-line comments in the script.This code needs src, data, data_cubes and data_steps (data_cubes and data_steps can be empty). It also requires fieldtrip toolbox.
+  
 
 ## Generate figures
 
