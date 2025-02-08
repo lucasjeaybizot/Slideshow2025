@@ -10,3 +10,6 @@ singularity exec ubuPy2_05_.img python -c "import utils; utils.cfg_generator_tim
 
 singularity exec ubuPy2_05_.img mpirun -np 16 python run.py -cp taskbased.cfg 1-2265
 singularity exec ubuPy2_05_.img mpirun -np 16 python run.py -cp timebased.cfg 1-2265
+
+singularity exec ubuPy2_05_.img python -c 'import utils; utils.combine(working_dir="EXPERIMENTS/taskbased/eeg/", cfg_fname="taskbased.cfg")'
+singularity exec ubuPy2_05_.img python -c 'import utils; utils.combine(working_dir="EXPERIMENTS/timebased/eeg/", cfg_fname="timebased.cfg")'
