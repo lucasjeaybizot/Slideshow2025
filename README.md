@@ -93,7 +93,4 @@
 * Step 5: rename code_ml to pboost
 * Step 6: Run 'bash run_pboost.sh'
 * Tips: Parallelize line 11 and 12 of run_pboost.sh by spreading '1-2265' across nodes
-* Results: resulting files will be in EXPERIMENTS/taskbased/eeg
-
-Place data_cubes in the correct subject folders
-Get_EDT_single.py
+* Results: resulting files will be in EXPERIMENTS/taskbased/eeg and EXPERIMENTS/timebased/eeg as result.csv in each. Rename them to result_auc_timebased.csv and result_auc_taskbased.csv to use in make_figure_3.m.
