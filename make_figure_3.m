@@ -1,9 +1,6 @@
 % ML Data Script for Figure 3
 
-% This script performs data validation, processing, and visualization for EEG and MEG data.
-% Specifically, it checks for required files, extracts relevant information,
-% computes validation AUC (Area Under the Curve), estimates earliest decoding times (EDT),
-% and generates visualizations comparing different methods.
+% This script generates figure 3.
 %
 % Key steps include:
 % 1. Checking for required data files.
@@ -174,7 +171,7 @@ fill([(time_meg/1000)' fliplr((time_meg/1000)')], [(squeeze(nanmean(meg_mat,1))-
 fill([time' fliplr(time')], [lower_sem_c' fliplr(upper_sem_c')],[0 .5 .75],'EdgeColor', 'none', 'FaceAlpha', .2)
 
 xlim([-2.5 .5]) % window to focus closer to movement
-ylim([0.45 1.05]) % to check
+ylim([0.45 1.05])
 xticks([-2 -1 0])
 yticks([0.5 0.6 0.7 0.8 0.9 1.0])
 yticklabels({'0.5', '0.6', '0.7', '0.8', '0.9', '1.0'})
