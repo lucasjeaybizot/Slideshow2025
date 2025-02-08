@@ -3,7 +3,7 @@
 ## Overview & Inventory
  This repository contains the code necessary to generate the figures of the preprint https://doi.org/10.31219/osf.io/ghs95. Data for that goes along with this code is available at https://osf.io/wm95q/ (DOI 10.17605/OSF.IO/WM95Q).<br><br>
  
- For all components to run you should have MATLAB with fieldtrip installed, Python 3 and the software singularity (version 3.4.1).<br>
+ For all components to run you should have MATLAB (preferred 2023b) with fieldtrip installed (preferred 20240129), Python 3 (preferred 3.8.5) and the software singularity (version 3.4.1).<br>
  For all components to run, first you need to download, unzip and merge into the repository and into their respective folders all the data from OSF (folders: data, data_ml, data_cubes and code_ml).<br>
  For all components to run, first you need to create the following folder: data_steps.<br><br>
  
@@ -68,8 +68,32 @@
 
 ## Generate figures
 
+* Step 1: clone this repository
+* Step 2: run make_figure_2.m to generate Fig. 2 OR make_figure_3.m to generate Fig. 3
+* Troubleshoot: edit paths if on mac/linux. 
+
 ## Preprocess EEG data
 
+* Step 1: clone this repository
+* Step 2: edit your ft_rejectvisual function by setting the top line to "function [data, chansel, trlsel] = ft_rejectvisual(cfg, data)"
+* Step 3: create empty 'data_steps' and 'data_cubes' folders in the repository
+* Step 4: Import and unzip the raw data from OSF into a 'data' folder
+* Step 5: Run preprocess.m
+* Step 6 (each participant): remove noisy channels
+* Step 7 (each participant): identify ocular components and report them in the command window using e.g "[2 4]" for components 2 and 4
+* Step 8 (each participant): remove noisy trials visually
+* Troubleshoot: edit paths if on mac/linux. 
+ 
 ## Run Haar-AdaBoost
+
+* Step 1: clone this repository
+* Step 2: push code_ml to your HPC cluster (or environment of your choice that has the software singularity)
+* Step 3: From OSF download data cubes and upload them to DATA/SUBJXX/EEG/ where XX stands for participant number (total 15).
+* Step 4: From OSF download ubuPy2_05_.img and add it to code_ml
+* Step 5: rename code_ml to pboost
+* Step 6: Run 'bash run_pboost.sh'
+* Tips: Parallelize line 11 and 12 of run_pboost.sh by spreading '1-2265' across nodes
+* Results: resulting files will be in EXPERIMENTS/taskbased/eeg
+
 Place data_cubes in the correct subject folders
 Get_EDT_single.py
