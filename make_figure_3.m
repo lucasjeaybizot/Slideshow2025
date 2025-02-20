@@ -180,7 +180,7 @@ xlabel('Time (s)')
 grid on
 axis square
 box on
-legend('Time-based_{EEG; OC}', 'Task-based_{EEG; OC}', 'Task-based_{MEG; PF}' , 'Location', 'NorthWest','AutoUpdate','off')
+legend('Time-based_{EEG; OC}', 'Task-based_{MEG; PF}', 'Task-based_{EEG; OC}' , 'Location', 'NorthWest','AutoUpdate','off')
 set(gca, 'TickDir', 'out', 'TickLength', [0.01 0.01], 'XAxisLocation', 'bottom', 'YAxisLocation','left')
 set(gca, 'FontWeight', 'bold', 'FontSize',font_size, 'LineWidth',2)
 title('Timecourse of validation AUC', 'FontSize', font_size)
