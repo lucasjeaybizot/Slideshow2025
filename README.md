@@ -1,5 +1,5 @@
-# Early Ramping Neural Activity Reliably Precedes Self-Initiated Action But Does Not Predict It
- This repository contains the code used in the study "Early Ramping Neural Activity Reliably Precedes Self-Initiated Action But Does Not Predict It".
+# The time course of neural activity predictive of impending movement
+ This repository contains the code used in the study "The time course of neural activity predictive of impending movement".
 ## Overview & Inventory
  This repository contains the code necessary to generate the figures of the preprint __Link pending__. Data for that goes along with this code is available at https://osf.io/wm95q/ (DOI 10.17605/OSF.IO/WM95Q).<br><br>
  
